@@ -327,22 +327,22 @@
 <!-- TABS -->
 <div class="tabs-wrapper">
   <div class="tabs" id="tabsBar">
-    <button class="tab-btn active" onclick="scrollTo('all', this)">All</button>
-    <button class="tab-btn" onclick="scrollTo('coffee', this)">☕ Coffee</button>
-    <button class="tab-btn" onclick="scrollTo('tea', this)">🍵 Tea</button>
-    <button class="tab-btn" onclick="scrollTo('cold', this)">🧊 Cold Drinks</button>
-    <button class="tab-btn" onclick="scrollTo('smoothies', this)">🥤 Smoothies</button>
-    <button class="tab-btn" onclick="scrollTo('juices', this)">🍊 Fresh Juices</button>
-    <button class="tab-btn" onclick="scrollTo('breakfast', this)">🍳 Breakfast</button>
-    <button class="tab-btn" onclick="scrollTo('sandwiches', this)">🥪 Sandwiches</button>
-    <button class="tab-btn" onclick="scrollTo('pasta', this)">🍝 Pasta</button>
-    <button class="tab-btn" onclick="scrollTo('pizza', this)">🍕 Pizza</button>
-    <button class="tab-btn" onclick="scrollTo('mains', this)">🍽 Mains</button>
-    <button class="tab-btn" onclick="scrollTo('vegan', this)">🌿 Vegan/Fasting</button>
-    <button class="tab-btn" onclick="scrollTo('salads', this)">🥗 Salads & Soups</button>
-    <button class="tab-btn" onclick="scrollTo('cakes', this)">🍰 Cakes</button>
-    <button class="tab-btn" onclick="scrollTo('gelato', this)">🍨 Gelato</button>
-    <button class="tab-btn" onclick="scrollTo('tortas', this)">🎂 Tortas</button>
+    <button class="tab-btn active" onclick="jumpTo('all', this)">All</button>
+    <button class="tab-btn" onclick="jumpTo('coffee', this)">☕ Coffee</button>
+    <button class="tab-btn" onclick="jumpTo('tea', this)">🍵 Tea</button>
+    <button class="tab-btn" onclick="jumpTo('cold', this)">🧊 Cold Drinks</button>
+    <button class="tab-btn" onclick="jumpTo('smoothies', this)">🥤 Smoothies</button>
+    <button class="tab-btn" onclick="jumpTo('juices', this)">🍊 Fresh Juices</button>
+    <button class="tab-btn" onclick="jumpTo('breakfast', this)">🍳 Breakfast</button>
+    <button class="tab-btn" onclick="jumpTo('sandwiches', this)">🥪 Sandwiches</button>
+    <button class="tab-btn" onclick="jumpTo('pasta', this)">🍝 Pasta</button>
+    <button class="tab-btn" onclick="jumpTo('pizza', this)">🍕 Pizza</button>
+    <button class="tab-btn" onclick="jumpTo('mains', this)">🍽 Mains</button>
+    <button class="tab-btn" onclick="jumpTo('vegan', this)">🌿 Vegan/Fasting</button>
+    <button class="tab-btn" onclick="jumpTo('salads', this)">🥗 Salads & Soups</button>
+    <button class="tab-btn" onclick="jumpTo('cakes', this)">🍰 Cakes</button>
+    <button class="tab-btn" onclick="jumpTo('gelato', this)">🍨 Gelato</button>
+    <button class="tab-btn" onclick="jumpTo('tortas', this)">🎂 Tortas</button>
   </div>
 </div>
 
@@ -748,11 +748,13 @@
 
 <footer class="menu-footer">
   <strong>All prices are inclusive of 15% VAT</strong> &amp; subject to 10% service charge<br>
-  Cremino Cafe · Tropical Mall, First Floor
+  Cremino Cafe · Tropical Mall, First Floor<br><br>
+  <span style="font-size:11px;color:#4a3e2a;letter-spacing:.08em">Made by <strong style="color:var(--gold)">Menata Web Solutions</strong></span><br>
+  <a href="https://rebrand.ly/menatawebsolution" target="_blank" style="font-size:11px;color:var(--muted);letter-spacing:.05em;text-decoration:none;border-bottom:1px solid var(--border);padding-bottom:1px;transition:color .2s;" onmouseover="this.style.color='var(--gold)'" onmouseout="this.style.color='var(--muted)'">rebrand.ly/menatawebsolution</a>
 </footer>
 
 <script>
-  function scrollTo(id, btn) {
+  function jumpTo(id, btn) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     if (id === 'all') {
@@ -760,7 +762,10 @@
       return;
     }
     const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (el) {
+      const offset = el.getBoundingClientRect().top + window.scrollY - 70;
+      window.scrollTo({ top: offset, behavior: 'smooth' });
+    }
   }
 
   function filterMenu() {
@@ -768,8 +773,10 @@
     let anyVisible = false;
 
     document.querySelectorAll('.item-card').forEach(card => {
-      const text = card.innerText.toLowerCase();
-      card.classList.toggle('hidden', q !== '' && !text.includes(q));
+      const nameEl = card.querySelector('.item-name');
+      const name = nameEl ? nameEl.innerText.toLowerCase() : '';
+      const match = q === '' || name.startsWith(q);
+      card.classList.toggle('hidden', !match);
     });
 
     document.querySelectorAll('.category-block').forEach(block => {
